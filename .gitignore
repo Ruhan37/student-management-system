@@ -1,0 +1,126 @@
+# ====================================================================
+# STUDENT MANAGEMENT SYSTEM - .gitignore
+# ====================================================================
+# Professional .gitignore for Spring Boot + Maven + Java 21
+
+# ==================== MAVEN BUILD OUTPUT ====================
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# ==================== IDE - INTELLIJ IDEA ====================
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+# ==================== IDE - ECLIPSE / STS ====================
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+# ==================== IDE - NETBEANS ====================
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# ==================== IDE - VS CODE ====================
+.vscode/
+*.code-workspace
+
+# ==================== JAVA ====================
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+
+# ==================== LOGS ====================
+logs/
+*.log
+*.log.*
+
+# ==================== SPRING BOOT ====================
+HELP.md
+.reloadTrigger
+.embedme
+
+# ==================== APPLICATION PROPERTIES ====================
+# Protect sensitive configuration (uncomment if using):
+# application-prod.properties
+# application-prod.yml
+# application-local.properties
+# application-local.yml
+.env
+.env.local
+.env.*.local
+
+# ==================== OS GENERATED FILES ====================
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# ==================== PACKAGE FILES ====================
+*.gz
+*.zip
+*.tar
+*.rar
+
+# ==================== MISC ====================
+# JaCoCo coverage
+*.exec
+
+# Test output
+test-output/
+surefire-reports/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.bak
+
+# Lombok generated
+*.delombok
+
+# H2 Database (if used for testing)
+*.db
+*.trace.db
+*.lock.db
+
+# ==================== SECRETS - NEVER COMMIT ====================
+*.pem
+*.key
+*.p12
+*.jks
+*.keystore
+credentials/
+secrets/

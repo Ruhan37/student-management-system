@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Student Management System</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <!-- Header -->
+            <div class="auth-header">
+                <div class="auth-logo">🎓</div>
+                <h1 class="auth-title">Create Account</h1>
+                <p class="auth-subtitle">Register as a new student</p>
+            </div>
+
+            <!-- Alert Messages -->
+            <div th:if="${error}" class="alert alert-danger">
+                <span>⚠️</span>
+                <span th:text="${error}">Error message</span>
+            </div>
+
+            <!-- Signup Form -->
+            <form th:action="@{/signup}" method="post">
+                <div class="form-group">
+                    <label class="form-label" for="name">Full Name</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        class="form-control"
+                        placeholder="Enter your full name"
+                        required
+                        minlength="2">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        class="form-control"
+                        placeholder="Enter your email"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="phone">Phone Number (Optional)</label>
+                    <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        class="form-control"
+                        placeholder="Enter your phone number">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="departmentId">Department</label>
+                    <select
+                        id="departmentId"
+                        name="departmentId"
+                        class="form-control form-select"
+                        required>
+                        <option value="">Select your department</option>
+                        <option th:each="dept : ${departments}"
+                                th:value="${dept.id}"
+                                th:text="${dept.name}">
+                            Department Name
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        class="form-control"
+                        placeholder="Create a password (min 6 characters)"
+                        required
+                        minlength="6">
+                    <p class="form-text">Password must be at least 6 characters</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="confirmPassword">Confirm Password</label>
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        class="form-control"
+                        placeholder="Confirm your password"
+                        required
+                        minlength="6">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg btn-block mt-4">
+                    Create Account
+                </button>
+            </form>
+
+            <!-- Footer -->
+            <div class="auth-footer">
+                <p>Already have an account? <a th:href="@{/login}">Sign in</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple client-side password matching validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                alert('Passwords do not match!');
+            }
+        });
+    </script>
+</body>
+</html>

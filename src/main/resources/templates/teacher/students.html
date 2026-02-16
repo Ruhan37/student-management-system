@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} + ' - Student Management System'">Students</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a class="navbar-brand" th:href="@{/teacher/dashboard}">
+            🎓 Student Management System
+        </a>
+        <div class="navbar-user">
+            <span th:text="'Welcome, ' + ${teacher.name}">Welcome, Teacher</span>
+            <a th:href="@{/logout}" class="btn btn-sm" style="background: rgba(255,255,255,0.2); color: white;">
+                Logout
+            </a>
+        </div>
+    </nav>
+
+    <div class="page-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar" style="top: 60px;">
+            <div class="sidebar-header">
+                <div class="sidebar-user">
+                    <div class="sidebar-avatar" th:text="${#strings.substring(teacher.name, 0, 1)}">T</div>
+                    <span class="sidebar-name" th:text="${teacher.name}">Teacher Name</span>
+                    <span class="sidebar-role">Teacher</span>
+                </div>
+            </div>
+            <ul class="sidebar-nav">
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/teacher/dashboard}" class="sidebar-nav-link">
+                        📊 Dashboard
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/teacher/profile}" class="sidebar-nav-link">
+                        👤 My Profile
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/teacher/students}" class="sidebar-nav-link active">
+                        👨‍🎓 Students
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/teacher/courses}" class="sidebar-nav-link">
+                        📚 My Courses
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/teacher/departments}" class="sidebar-nav-link">
+                        🏛️ Departments
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" style="margin-top: 60px;">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">Students</h1>
+                    <p class="page-subtitle">Manage all registered students</p>
+                </div>
+            </div>
+
+            <!-- Alert Messages -->
+            <div th:if="${success}" class="alert alert-success">
+                <span>✅</span>
+                <span th:text="${success}">Success message</span>
+            </div>
+            <div th:if="${error}" class="alert alert-danger">
+                <span>⚠️</span>
+                <span th:text="${error}">Error message</span>
+            </div>
+
+            <!-- Students Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">👨‍🎓 All Students</h3>
+                </div>
+                <div class="card-body">
+                    <div th:if="${#lists.isEmpty(students)}" class="empty-state">
+                        <div class="empty-state-icon">👨‍🎓</div>
+                        <h4 class="empty-state-title">No students registered</h4>
+                        <p>Students will appear here once they register.</p>
+                    </div>
+
+                    <div th:unless="${#lists.isEmpty(students)}" class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Student ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Department</th>
+                                    <th>Courses</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="student : ${students}">
+                                    <td><span class="badge badge-primary" th:text="${student.studentId} ?: 'N/A'">STU001</span></td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="sidebar-avatar" style="width: 35px; height: 35px; font-size: 0.875rem;"
+                                                 th:text="${#strings.substring(student.name, 0, 1)}">S</div>
+                                            <span th:text="${student.name}">Student Name</span>
+                                        </div>
+                                    </td>
+                                    <td th:text="${student.email}">student@email.com</td>
+                                    <td th:text="${student.phone} ?: 'N/A'">Phone</td>
+                                    <td><span class="badge badge-info" th:text="${student.departmentName} ?: 'N/A'">CSE</span></td>
+                                    <td><span class="badge badge-success" th:text="${student.enrolledCourseCount} + ' courses'">0 courses</span></td>
+                                    <td>
+                                        <form th:action="@{/teacher/students/delete/{id}(id=${student.id})}" method="post" style="display: inline;">
+                                            <button type="submit" class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('Are you sure you want to delete this student? This action cannot be undone.')">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

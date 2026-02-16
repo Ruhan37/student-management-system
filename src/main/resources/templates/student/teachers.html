@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} + ' - Student Management System'">Teachers</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a class="navbar-brand" th:href="@{/student/dashboard}">
+            🎓 Student Management System
+        </a>
+        <div class="navbar-user">
+            <a th:href="@{/logout}" class="btn btn-sm" style="background: rgba(255,255,255,0.2); color: white;">
+                Logout
+            </a>
+        </div>
+    </nav>
+
+    <div class="page-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar" style="top: 60px;">
+            <ul class="sidebar-nav" style="padding-top: 1.5rem;">
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/student/dashboard}" class="sidebar-nav-link">
+                        📊 Dashboard
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/student/profile}" class="sidebar-nav-link">
+                        👤 My Profile
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/student/courses}" class="sidebar-nav-link">
+                        📚 My Courses
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/student/teachers}" class="sidebar-nav-link active">
+                        👨‍🏫 Teachers
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/student/departments}" class="sidebar-nav-link">
+                        🏛️ Departments
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" style="margin-top: 60px;">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">Teachers</h1>
+                    <p class="page-subtitle">View all teachers and their information</p>
+                </div>
+            </div>
+
+            <!-- Teachers List -->
+            <div class="card">
+                <div class="card-body">
+                    <div th:if="${#lists.isEmpty(teachers)}" class="empty-state">
+                        <div class="empty-state-icon">👨‍🏫</div>
+                        <h4 class="empty-state-title">No teachers found</h4>
+                    </div>
+
+                    <div th:unless="${#lists.isEmpty(teachers)}" class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Department</th>
+                                    <th>Specialization</th>
+                                    <th>Courses</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="teacher : ${teachers}">
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="sidebar-avatar" style="width: 35px; height: 35px; font-size: 0.875rem;"
+                                                 th:text="${#strings.substring(teacher.name, 0, 1)}">T</div>
+                                            <span th:text="${teacher.name}">Teacher Name</span>
+                                        </div>
+                                    </td>
+                                    <td th:text="${teacher.email}">teacher@email.com</td>
+                                    <td><span class="badge badge-info" th:text="${teacher.departmentName} ?: 'N/A'">CSE</span></td>
+                                    <td th:text="${teacher.specialization} ?: 'Not specified'">Specialization</td>
+                                    <td><span class="badge badge-primary" th:text="${teacher.courseCount} + ' courses'">3 courses</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

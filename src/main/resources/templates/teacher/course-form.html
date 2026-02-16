@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} + ' - Student Management System'">Course Form</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a class="navbar-brand" th:href="@{/teacher/dashboard}">
+            🎓 Student Management System
+        </a>
+        <div class="navbar-user">
+            <span th:text="'Welcome, ' + ${teacher.name}">Welcome, Teacher</span>
+            <a th:href="@{/logout}" class="btn btn-sm" style="background: rgba(255,255,255,0.2); color: white;">
+                Logout
+            </a>
+        </div>
+    </nav>
+
+    <div class="page-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar" style="top: 60px;">
+            <div class="sidebar-header">
+                <div class="sidebar-user">
+                    <div class="sidebar-avatar" th:text="${#strings.substring(teacher.name, 0, 1)}">T</div>
+                    <span class="sidebar-name" th:text="${teacher.name}">Teacher Name</span>
+                    <span class="sidebar-role">Teacher</span>
+                </div>
+            </div>
+            <ul class="sidebar-nav">
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/teacher/dashboard}" class="sidebar-nav-link">
+                        📊 Dashboard
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/teacher/profile}" class="sidebar-nav-link">
+                        👤 My Profile
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/teacher/students}" class="sidebar-nav-link">
+                        👨‍🎓 Students
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/teacher/courses}" class="sidebar-nav-link active">
+                        📚 My Courses
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/teacher/departments}" class="sidebar-nav-link">
+                        🏛️ Departments
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" style="margin-top: 60px;">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title" th:text="${course.id != null ? 'Edit Course' : 'Create New Course'}">Course Form</h1>
+                    <p class="page-subtitle" th:text="${course.id != null ? 'Update course information' : 'Add a new course to your teaching schedule'}">Form subtitle</p>
+                </div>
+            </div>
+
+            <!-- Alert Messages -->
+            <div th:if="${error}" class="alert alert-danger">
+                <span>⚠️</span>
+                <span th:text="${error}">Error message</span>
+            </div>
+
+            <!-- Course Form -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">📚 Course Details</h3>
+                </div>
+                <div class="card-body">
+                    <form th:action="${course.id != null ? '/teacher/courses/edit/' + course.id : '/teacher/courses/new'}" method="post">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                            <div class="form-group">
+                                <label class="form-label" for="code">Course Code *</label>
+                                <input type="text" id="code" name="code" class="form-control"
+                                       th:value="${course.code}" required
+                                       placeholder="e.g., CS101, MATH201"
+                                       pattern="[A-Za-z]{2,4}[0-9]{3}"
+                                       title="Course code should be 2-4 letters followed by 3 digits">
+                                <p class="form-text">Format: 2-4 letters + 3 digits (e.g., CS101)</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="name">Course Name *</label>
+                                <input type="text" id="name" name="name" class="form-control"
+                                       th:value="${course.name}" required minlength="3"
+                                       placeholder="e.g., Introduction to Programming">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="credits">Credits *</label>
+                                <input type="number" id="credits" name="credits" class="form-control"
+                                       th:value="${course.credits} ?: 3" required min="1" max="6"
+                                       placeholder="3">
+                                <p class="form-text">Credit hours (1-6)</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="maxStudents">Maximum Capacity *</label>
+                                <input type="number" id="maxStudents" name="maxStudents" class="form-control"
+                                       th:value="${course.maxStudents} ?: 30" required min="1" max="200"
+                                       placeholder="30">
+                                <p class="form-text">Maximum number of students</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-4">
+                            <label class="form-label" for="description">Course Description</label>
+                            <textarea id="description" name="description" class="form-control" rows="4"
+                                      placeholder="Enter a detailed description of the course content, objectives, and requirements..."
+                                      th:text="${course.description}"></textarea>
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <span th:text="${course.id != null ? 'Update Course' : 'Create Course'}">Save</span>
+                            </button>
+                            <a th:href="@{/teacher/courses}" class="btn btn-secondary">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

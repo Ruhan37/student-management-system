@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Denied - Student Management System</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="auth-wrapper">
+        <div class="auth-card" style="text-align: center;">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">🚫</div>
+            <h1 class="auth-title" style="color: #ef4444;">Access Denied</h1>
+            <p class="auth-subtitle">You don't have permission to access this resource.</p>
+
+            <div class="mt-4">
+                <a th:href="@{/}" class="btn btn-primary">Go to Dashboard</a>
+                <a th:href="@{/logout}" class="btn btn-secondary">Logout</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} + ' - Student Management System'">Student Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a class="navbar-brand" th:href="@{/student/dashboard}">
+            🎓 Student Management System
+        </a>
+        <div class="navbar-user">
+            <span th:text="'Welcome, ' + ${student.name}">Welcome, Student</span>
+            <a th:href="@{/logout}" class="btn btn-sm" style="background: rgba(255,255,255,0.2); color: white;">
+                Logout
+            </a>
+        </div>
+    </nav>
+
+    <div class="page-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar" style="top: 60px;">
+            <div class="sidebar-header">
+                <div class="sidebar-user">
+                    <div class="sidebar-avatar" th:text="${#strings.substring(student.name, 0, 1)}">J</div>
+                    <span class="sidebar-name" th:text="${student.name}">Student Name</span>
+                    <span class="sidebar-role">Student</span>
+                </div>
+            </div>
+            <ul class="sidebar-nav">
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/student/dashboard}" class="sidebar-nav-link active">
+                        📊 Dashboard
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/student/profile}" class="sidebar-nav-link">
+                        👤 My Profile
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/student/courses}" class="sidebar-nav-link">
+                        📚 My Courses
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/student/teachers}" class="sidebar-nav-link">
+                        👨‍🏫 Teachers
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/student/departments}" class="sidebar-nav-link">
+                        🏛️ Departments
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" style="margin-top: 60px;">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">Dashboard</h1>
+                    <p class="page-subtitle">Welcome back! Here's your overview.</p>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">📚</div>
+                    <div class="stat-info">
+                        <div class="stat-value" th:text="${student.enrolledCourseCount} ?: 0">0</div>
+                        <div class="stat-label">Enrolled Courses</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">🎯</div>
+                    <div class="stat-info">
+                        <div class="stat-value" th:text="${#lists.size(courses)}">0</div>
+                        <div class="stat-label">Available Courses</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange">🏛️</div>
+                    <div class="stat-info">
+                        <div class="stat-value" th:text="${student.departmentName} ?: 'N/A'">CSE</div>
+                        <div class="stat-label">Department</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon purple">🆔</div>
+                    <div class="stat-info">
+                        <div class="stat-value" th:text="${student.studentId} ?: 'N/A'">STU001</div>
+                        <div class="stat-label">Student ID</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Info Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="card-title">📋 Your Information</h3>
+                </div>
+                <div class="card-body">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <div>
+                            <strong>Name:</strong>
+                            <span th:text="${student.name}">Student Name</span>
+                        </div>
+                        <div>
+                            <strong>Email:</strong>
+                            <span th:text="${student.email}">student@email.com</span>
+                        </div>
+                        <div>
+                            <strong>Phone:</strong>
+                            <span th:text="${student.phone} ?: 'Not provided'">Phone</span>
+                        </div>
+                        <div>
+                            <strong>Enrollment Date:</strong>
+                            <span th:text="${student.enrollmentDate}">2024-01-01</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Available Courses -->
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title">📚 Available Courses</h3>
+                    <a th:href="@{/student/courses}" class="btn btn-sm btn-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    <div th:if="${#lists.isEmpty(courses)}" class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <h4 class="empty-state-title">No courses available</h4>
+                        <p>Check back later for new courses.</p>
+                    </div>
+
+                    <div th:unless="${#lists.isEmpty(courses)}" class="course-grid">
+                        <div th:each="course, iterStat : ${courses}" th:if="${iterStat.index < 3}" class="course-card">
+                            <div class="course-card-header">
+                                <div class="course-card-code" th:text="${course.code}">CS101</div>
+                                <div class="course-card-name" th:text="${course.name}">Course Name</div>
+                            </div>
+                            <div class="course-card-body">
+                                <div class="course-card-meta">
+                                    <span>👨‍🏫 <span th:text="${course.teacherName} ?: 'TBA'">Teacher</span></span>
+                                    <span>📖 <span th:text="${course.credits}">3</span> Credits</span>
+                                </div>
+                                <p class="course-card-description" th:text="${course.description} ?: 'No description available.'">
+                                    Course description goes here...
+                                </p>
+                            </div>
+                            <div class="course-card-footer">
+                                <span class="course-seats"
+                                      th:classappend="${course.availableSeats > 10 ? 'available' : (course.availableSeats > 0 ? 'limited' : 'full')}"
+                                      th:text="${course.availableSeats} + ' seats left'">
+                                    20 seats left
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

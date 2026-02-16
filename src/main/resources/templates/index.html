@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - Student Management System</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #60a5fa 100%);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .hero-subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin-bottom: 2rem;
+        }
+        .hero-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .hero-btn {
+            padding: 0.875rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .hero-btn-primary {
+            background: white;
+            color: #2563eb;
+        }
+        .hero-btn-primary:hover {
+            background: #f1f5f9;
+            transform: translateY(-2px);
+        }
+        .hero-btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        .hero-btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin-top: 4rem;
+        }
+        .feature-card {
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .feature-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .feature-text {
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+        .test-credentials {
+            margin-top: 3rem;
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 12px;
+            max-width: 500px;
+        }
+        .test-credentials h4 {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        .test-credentials code {
+            display: block;
+            background: rgba(0,0,0,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="hero-title">🎓 Student Management System</div>
+        <p class="hero-subtitle">
+            A comprehensive platform for managing students, teachers, courses, and departments.
+            Built with Spring Boot, PostgreSQL, JWT Security, and Thymeleaf.
+        </p>
+
+        <div class="hero-actions">
+            <a th:href="@{/login}" class="hero-btn hero-btn-primary">Login</a>
+            <a th:href="@{/signup}" class="hero-btn hero-btn-secondary">Register as Student</a>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">👨‍🎓</div>
+                <div class="feature-title">Student Portal</div>
+                <p class="feature-text">Register, view courses, enroll in classes, and manage your profile</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">👨‍🏫</div>
+                <div class="feature-title">Teacher Dashboard</div>
+                <p class="feature-text">Manage courses, view students, and track enrollments</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <div class="feature-title">Secure Authentication</div>
+                <p class="feature-text">JWT-based security with role-based access control</p>
+            </div>
+        </div>
+
+        <div class="test-credentials">
+            <h4>🧪 Test Credentials</h4>
+            <p style="font-size: 0.875rem; margin-bottom: 1rem;">Use these to test the application:</p>
+            <code>Teacher: teacher1@school.com / teacher123</code>
+            <code>Teacher: teacher2@school.com / teacher123</code>
+            <code>Teacher: teacher3@school.com / teacher123</code>
+            <p style="font-size: 0.75rem; margin-top: 1rem; opacity: 0.8;">
+                Students can self-register via the signup page
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} + ' - Student Management System'">Departments</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a class="navbar-brand" th:href="@{/student/dashboard}">
+            🎓 Student Management System
+        </a>
+        <div class="navbar-user">
+            <a th:href="@{/logout}" class="btn btn-sm" style="background: rgba(255,255,255,0.2); color: white;">
+                Logout
+            </a>
+        </div>
+    </nav>
+
+    <div class="page-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar" style="top: 60px;">
+            <ul class="sidebar-nav" style="padding-top: 1.5rem;">
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/student/dashboard}" class="sidebar-nav-link">
+                        📊 Dashboard
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/student/profile}" class="sidebar-nav-link">
+                        👤 My Profile
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/student/courses}" class="sidebar-nav-link">
+                        📚 My Courses
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/student/teachers}" class="sidebar-nav-link">
+                        👨‍🏫 Teachers
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/student/departments}" class="sidebar-nav-link active">
+                        🏛️ Departments
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" style="margin-top: 60px;">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">Departments</h1>
+                    <p class="page-subtitle">Browse all academic departments</p>
+                </div>
+            </div>
+
+            <!-- Departments Grid -->
+            <div class="course-grid">
+                <div th:each="dept : ${departments}" class="card">
+                    <div class="card-header" style="background: linear-gradient(135deg, #2563eb, #3b82f6); color: white;">
+                        <h3 class="card-title" style="color: white;" th:text="${dept.name}">Department Name</h3>
+                        <span th:text="${dept.code}" style="opacity: 0.9;">CODE</span>
+                    </div>
+                    <div class="card-body">
+                        <p th:text="${dept.description} ?: 'No description available.'" class="text-muted">
+                            Department description...
+                        </p>
+                        <div class="d-flex gap-3 mt-3">
+                            <span class="badge badge-primary">
+                                👨‍🎓 <span th:text="${dept.studentCount}">0</span> Students
+                            </span>
+                            <span class="badge badge-info">
+                                👨‍🏫 <span th:text="${dept.teacherCount}">0</span> Teachers
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Student Management System</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <!-- Header -->
+            <div class="auth-header">
+                <div class="auth-logo">🎓</div>
+                <h1 class="auth-title">Welcome Back!</h1>
+                <p class="auth-subtitle">Sign in to your account to continue</p>
+            </div>
+
+            <!-- Alert Messages -->
+            <div th:if="${error}" class="alert alert-danger">
+                <span>⚠️</span>
+                <span th:text="${error}">Error message</span>
+            </div>
+
+            <div th:if="${message}" class="alert alert-success">
+                <span>✅</span>
+                <span th:text="${message}">Success message</span>
+            </div>
+
+            <!-- Login Form -->
+            <form th:action="@{/login}" method="post">
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        class="form-control"
+                        placeholder="Enter your email"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        class="form-control"
+                        placeholder="Enter your password"
+                        required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg btn-block mt-4">
+                    Sign In
+                </button>
+            </form>
+
+            <!-- Footer -->
+            <div class="auth-footer">
+                <p>Don't have an account? <a th:href="@{/signup}">Sign up as Student</a></p>
+            </div>
+
+            <!-- Test Credentials Info -->
+            <div class="mt-4" style="background: #f0f9ff; padding: 1rem; border-radius: 8px; font-size: 0.875rem;">
+                <strong style="color: #1e40af;">📋 Test Credentials:</strong>
+                <div style="margin-top: 0.5rem; color: #3b82f6;">
+                    <div><strong>Teacher:</strong> teacher1@school.com / teacher123</div>
+                    <div><strong>Student:</strong> Register via signup</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

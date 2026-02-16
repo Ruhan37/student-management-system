@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} + ' - Student Management System'">My Courses</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a class="navbar-brand" th:href="@{/student/dashboard}">
+            🎓 Student Management System
+        </a>
+        <div class="navbar-user">
+            <span th:text="'Welcome, ' + ${student.name}">Welcome, Student</span>
+            <a th:href="@{/logout}" class="btn btn-sm" style="background: rgba(255,255,255,0.2); color: white;">
+                Logout
+            </a>
+        </div>
+    </nav>
+
+    <div class="page-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar" style="top: 60px;">
+            <div class="sidebar-header">
+                <div class="sidebar-user">
+                    <div class="sidebar-avatar" th:text="${#strings.substring(student.name, 0, 1)}">J</div>
+                    <span class="sidebar-name" th:text="${student.name}">Student Name</span>
+                    <span class="sidebar-role">Student</span>
+                </div>
+            </div>
+            <ul class="sidebar-nav">
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/student/dashboard}" class="sidebar-nav-link">
+                        📊 Dashboard
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/student/profile}" class="sidebar-nav-link">
+                        👤 My Profile
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/student/courses}" class="sidebar-nav-link active">
+                        📚 My Courses
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/student/teachers}" class="sidebar-nav-link">
+                        👨‍🏫 Teachers
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a th:href="@{/student/departments}" class="sidebar-nav-link">
+                        🏛️ Departments
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" style="margin-top: 60px;">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">My Courses</h1>
+                    <p class="page-subtitle">Manage your course enrollments</p>
+                </div>
+            </div>
+
+            <!-- Alert Messages -->
+            <div th:if="${success}" class="alert alert-success">
+                <span>✅</span>
+                <span th:text="${success}">Success message</span>
+            </div>
+            <div th:if="${error}" class="alert alert-danger">
+                <span>⚠️</span>
+                <span th:text="${error}">Error message</span>
+            </div>
+
+            <!-- Enrolled Courses -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="card-title">📖 Enrolled Courses</h3>
+                </div>
+                <div class="card-body">
+                    <div th:if="${#lists.isEmpty(enrolledCourses)}" class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <h4 class="empty-state-title">No enrolled courses</h4>
+                        <p>You haven't enrolled in any courses yet. Browse available courses below.</p>
+                    </div>
+
+                    <div th:unless="${#lists.isEmpty(enrolledCourses)}" class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Course Name</th>
+                                    <th>Teacher</th>
+                                    <th>Credits</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="course : ${enrolledCourses}">
+                                    <td><span class="badge badge-primary" th:text="${course.code}">CS101</span></td>
+                                    <td th:text="${course.name}">Course Name</td>
+                                    <td th:text="${course.teacherName} ?: 'TBA'">Teacher Name</td>
+                                    <td th:text="${course.credits}">3</td>
+                                    <td>
+                                        <form th:action="@{/student/courses/drop/{id}(id=${course.id})}" method="post" style="display: inline;">
+                                            <button type="submit" class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('Are you sure you want to drop this course?')">
+                                                Drop
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Available Courses -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">🎯 Available Courses</h3>
+                </div>
+                <div class="card-body">
+                    <div th:if="${#lists.isEmpty(availableCourses)}" class="empty-state">
+                        <div class="empty-state-icon">✅</div>
+                        <h4 class="empty-state-title">No more courses available</h4>
+                        <p>You've enrolled in all available courses!</p>
+                    </div>
+
+                    <div th:unless="${#lists.isEmpty(availableCourses)}" class="course-grid">
+                        <div th:each="course : ${availableCourses}" class="course-card">
+                            <div class="course-card-header">
+                                <div class="course-card-code" th:text="${course.code}">CS101</div>
+                                <div class="course-card-name" th:text="${course.name}">Course Name</div>
+                            </div>
+                            <div class="course-card-body">
+                                <div class="course-card-meta">
+                                    <span>👨‍🏫 <span th:text="${course.teacherName} ?: 'TBA'">Teacher</span></span>
+                                    <span>📖 <span th:text="${course.credits}">3</span> Credits</span>
+                                </div>
+                                <p class="course-card-description" th:text="${course.description} ?: 'No description available.'">
+                                    Course description goes here...
+                                </p>
+                            </div>
+                            <div class="course-card-footer">
+                                <span class="course-seats"
+                                      th:classappend="${course.availableSeats > 10 ? 'available' : (course.availableSeats > 0 ? 'limited' : 'full')}"
+                                      th:text="${course.availableSeats} + ' seats left'">
+                                    20 seats left
+                                </span>
+                                <form th:if="${course.availableSeats > 0}"
+                                      th:action="@{/student/courses/enroll/{id}(id=${course.id})}" method="post">
+                                    <button type="submit" class="btn btn-sm btn-success">Enroll</button>
+                                </form>
+                                <span th:if="${course.availableSeats == 0}" class="badge badge-danger">Full</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
