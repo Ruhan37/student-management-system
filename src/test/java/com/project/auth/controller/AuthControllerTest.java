@@ -7,6 +7,7 @@ import com.project.auth.dto.SignupRequest;
 import com.project.auth.exception.BadRequestException;
 import com.project.auth.exception.DuplicateResourceException;
 import com.project.auth.security.CustomUserDetailsService;
+import com.project.auth.security.JwtAuthenticationFilter;
 import com.project.auth.security.JwtTokenProvider;
 import com.project.auth.service.AuthService;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -22,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -32,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * Test Strategy:
  * - @WebMvcTest: Only loads web layer, fast and focused
+ * - @AutoConfigureMockMvc(addFilters = false): Disable security for testing public endpoints
  * - Mock all dependencies (AuthService, Security components)
  * - Test both success and failure scenarios
  * - Validate request body validation
@@ -39,6 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Naming Convention: methodName_scenario_expectedBehavior
  */
 @WebMvcTest(AuthController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class AuthControllerTest {
 
     @Autowired
@@ -55,6 +60,9 @@ class AuthControllerTest {
 
     @MockBean
     private CustomUserDetailsService customUserDetailsService;
+
+    @MockBean
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private SignupRequest validSignupRequest;
     private LoginRequest validLoginRequest;

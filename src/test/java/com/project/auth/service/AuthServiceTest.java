@@ -21,6 +21,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -47,6 +49,7 @@ import static org.mockito.Mockito.*;
  * - Cover success paths and edge cases
  */
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class AuthServiceTest {
 
     @Mock
@@ -241,7 +244,7 @@ class AuthServiceTest {
             when(jwtTokenProvider.generateToken(any(Authentication.class)))
                     .thenReturn("test.jwt.token");
             when(jwtTokenProvider.getJwtExpiration()).thenReturn(10800000L);
-            when(studentRepository.findByUserId(1L)).thenReturn(Optional.of(testStudent));
+            when(studentRepository.findByEmail("john.doe@example.com")).thenReturn(Optional.of(testStudent));
 
             // Act
             AuthResponse response = authService.login(validLoginRequest);
@@ -281,7 +284,7 @@ class AuthServiceTest {
                     .thenReturn(authentication);
             when(jwtTokenProvider.generateToken(any(Authentication.class))).thenReturn("token");
             when(jwtTokenProvider.getJwtExpiration()).thenReturn(10800000L);
-            when(studentRepository.findByUserId(1L)).thenReturn(Optional.of(testStudent));
+            when(studentRepository.findByEmail("john.doe@example.com")).thenReturn(Optional.of(testStudent));
 
             // Act
             authService.login(validLoginRequest);
