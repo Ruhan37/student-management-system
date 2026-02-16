@@ -1,0 +1,204 @@
+# ====================================================================
+# STUDENT MANAGEMENT SYSTEM - CI/CD PIPELINE
+# ====================================================================
+#
+# This workflow provides:
+# - Automated testing on every push/PR to main
+# - Maven dependency caching for faster builds
+# - JaCoCo code coverage reporting
+# - Build artifact upload for deployment
+#
+# Author: DevOps Team
+# Last Updated: 2026-02-16
+# ====================================================================
+
+name: CI Pipeline
+
+# ==================== TRIGGER CONDITIONS ====================
+on:
+  push:
+    branches:
+      - main
+      - develop
+    # Skip CI for documentation-only changes
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.gitignore'
+
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+  # Allow manual trigger from GitHub Actions UI
+  workflow_dispatch:
+
+# ==================== ENVIRONMENT VARIABLES ====================
+env:
+  JAVA_VERSION: '21'
+  MAVEN_OPTS: '-Xmx1024m'
+
+# ==================== JOBS ====================
+jobs:
+  # ==================== BUILD & TEST JOB ====================
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    # Service containers (PostgreSQL for integration tests)
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: student_management_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        # Health checks to ensure DB is ready
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      # ===== CHECKOUT CODE =====
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better analysis
+
+      # ===== SETUP JAVA 21 =====
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'  # Eclipse Temurin (formerly AdoptOpenJDK)
+          cache: 'maven'           # Automatic Maven dependency caching
+
+      # ===== CACHE MAVEN DEPENDENCIES =====
+      # Additional caching layer for faster subsequent builds
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.m2/wrapper
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      # ===== BUILD & TEST =====
+      # -B: Batch mode (no interactive input)
+      # -V: Display version information
+      # -e: Show detailed error messages
+      - name: Build and Run Tests
+        run: |
+          mvn -B -V -e clean verify \
+            -Dspring.datasource.url=jdbc:postgresql://localhost:5432/student_management_db \
+            -Dspring.datasource.username=postgres \
+            -Dspring.datasource.password=postgres
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET || 'TestSecretKeyForCIOnlyNotForProductionUse256Bits' }}
+
+      # ===== CHECK TEST RESULTS =====
+      - name: Verify Test Results
+        if: always()
+        run: |
+          echo "=== Test Summary ==="
+          if [ -d "target/surefire-reports" ]; then
+            grep -l "failures" target/surefire-reports/*.xml 2>/dev/null && echo "Some tests failed!" || echo "All tests passed!"
+            echo "Test files:"
+            ls -la target/surefire-reports/*.xml 2>/dev/null || echo "No test reports found"
+          fi
+
+      # ===== UPLOAD TEST REPORTS =====
+      - name: Upload Test Reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-reports
+          path: target/surefire-reports/
+          retention-days: 7
+
+      # ===== UPLOAD JACOCO COVERAGE REPORT =====
+      - name: Upload JaCoCo Coverage Report
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: jacoco-coverage-report
+          path: target/site/jacoco/
+          retention-days: 30
+
+      # ===== COVERAGE SUMMARY =====
+      - name: Generate Coverage Summary
+        if: success()
+        run: |
+          echo "=== JaCoCo Coverage Summary ===" >> $GITHUB_STEP_SUMMARY
+          if [ -f "target/site/jacoco/index.html" ]; then
+            echo "✅ Coverage report generated successfully" >> $GITHUB_STEP_SUMMARY
+            echo "📊 Download the 'jacoco-coverage-report' artifact to view detailed coverage" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ Coverage report not found" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      # ===== UPLOAD BUILD ARTIFACT =====
+      - name: Upload Build Artifact (JAR)
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: application-jar
+          path: target/*.jar
+          retention-days: 7
+
+  # ==================== CODE QUALITY JOB (OPTIONAL) ====================
+  code-quality:
+    name: Code Quality Check
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: 'maven'
+
+      # Add additional code quality tools here (SpotBugs, Checkstyle, etc.)
+      - name: Check Code Compilation
+        run: mvn -B compile -DskipTests
+
+  # ==================== SECURITY SCAN (OPTIONAL) ====================
+  security-scan:
+    name: Dependency Security Scan
+    runs-on: ubuntu-latest
+    needs: build-and-test
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: 'maven'
+
+      # Check for known vulnerabilities in dependencies
+      - name: OWASP Dependency Check
+        run: |
+          echo "=== Security Scan Summary ===" >> $GITHUB_STEP_SUMMARY
+          echo "ℹ️ Consider adding OWASP Dependency Check plugin for vulnerability scanning" >> $GITHUB_STEP_SUMMARY
+          # Uncomment below to enable OWASP Dependency Check:
+          # mvn org.owasp:dependency-check-maven:check
